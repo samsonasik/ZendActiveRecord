@@ -101,39 +101,3 @@ $tuna->delete();
 $tunaId = 999;
 $fishModel->delete($tunaId);
 </pre>
-
-<h2>Conventions</h2>
-<p>We use current web standards with the db naming conventions:</p>
-
-<ul>
-    <li>all tables have `id` as their primary key</li>
-    <li>all names are lower case</li>
-    <li>spaces are represented by underscores</li>
-    <li>table names are plural</li>
-    <li>table names describe their contents</li>
-    <li>foreign key columns combine the singular version of the related table and '_id'</li>
-    <li>unless you are defining a foreign key, the table's name should not be repeated in column names</li>
-</ul>
-
-<p>For example:</p>
-
-<ul>
-    <li>Table: 'dimStudent' becomes 'students'</li>
-    <li>Primary Key: 'UserID' becomes 'id'</li>
-    <li>Column: 'StateStudentID' becomes 'state_student_id'</li>
-    <li>Foreign Key: 'user_id' points to users.id</li>
-    <li>In the table schools, use 'address' instead of 'school_address'</li>
-</ul>
-
-<h3>ETL Tables</h3>
-
-<p>All generated ETL tables are prefixed with 'etl_'</p>
-
-<h2>Meta Data</h2>
-
-<p>If a table stores the create date and update date the columns should be DATETIME:</p>
-
-<ul>
-    <li>created_at</li>
-    <li>updated_at</li>
-</ul>
