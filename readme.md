@@ -14,9 +14,9 @@ of the fields in the fish table.</p>
 <pre>
 namespace Application\Model; // depending on the module
 
-use ActiveRecordAbstract;
+use ActiveRecord\Model;
 
-class Fish  extends ActiveRecordAbstract {
+class Fish  extends Model {
     protected $tableName = 'fish';
 
     public $id;
