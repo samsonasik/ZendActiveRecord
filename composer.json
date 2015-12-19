@@ -1,0 +1,9 @@
+{
+  "name": "digitalus/zend-active-record",
+  "description": "Active Record model for Zend 2 DB",
+  "homepage": "https://github.com/forrestLyman/ZendActiveRecord",
+  "require": {
+    "php": ">=5.5",
+    "zendframework/zendframework": ">=2.0"
+  }
+}

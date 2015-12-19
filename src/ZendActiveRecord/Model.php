@@ -1,5 +1,5 @@
 <?php
-namespace ActiveRecord;
+namespace ZendActiveRecord;
 
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Zend\Db\TableGateway\TableGateway;

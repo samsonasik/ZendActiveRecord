@@ -3,7 +3,7 @@
 This object exposes CRUD (create, read, update, and delete) methods for the related row.</p>
 
 <h2>This Implementation</h2>
-<p>All of the AR (active record) models extend the <code>ActiveRecordAbstract</code> base class which handles
+<p>All of the AR (active record) models extend the <code>ZendActiveRecordAbstract</code> base class which handles
 the underlying functionality. The implementation is simplistic and light weight by design, to avoid any
 interference between the AR implementation and individual model logic. The only dependency is a db adapter
 to handle db interaction.</p>
@@ -14,7 +14,7 @@ of the fields in the fish table.</p>
 <pre>
 namespace Application\Model; // depending on the module
 
-use ActiveRecord\Model;
+use ZendActiveRecord\Model;
 
 class Fish  extends Model {
     protected $tableName = 'fish';
