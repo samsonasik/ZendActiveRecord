@@ -6,19 +6,17 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\RowGateway\RowGatewayInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
-abstract class Model implements RowGatewayInterface
+abstract class Model implements RowGatewayInterface, ServiceLocatorAwareInterface
 {
+    use ServiceLocatorAwareTrait;
+
     protected $adapter;
     const DATE_FORMAT = 'Y-m-d H:i:s';
     const LONG_DATE_FORMAT = 'Y-m-d H:i:s.B';
 
-    public function __construct(\Zend\Db\Adapter\Adapter $adapter)
-    {
-        // explicitly set the platform driver
-        $adapter->getPlatform()->setDriver($adapter->getDriver());
-        $this->adapter = $adapter;
-    }
 
     /**
      * Creates a new empty row (but does not save it)
@@ -36,12 +34,14 @@ abstract class Model implements RowGatewayInterface
      *
      */
     public function save() {
+        $this->loadAdapter();
         $data = $this->toArray();
         $id = $data['id'];
         unset($data['id']);
         if($id > 0) {
             $this->getTable()->update($data, 'id = ' . $id);
         } else {
+            if(property_exists($this, 'created_at')) $data['created_at'] = $this->now();
             $this->getTable()->insert($data);
             $this->id = $this->getAdapter()->getDriver()->getLastGeneratedValue();
         }
@@ -55,6 +55,7 @@ abstract class Model implements RowGatewayInterface
      * @param int $id
      */
     public function delete($id = 0) {
+        $this->loadAdapter();
         if($id == 0 && $this->id > 0) {
             $id = $this->id;
         }
@@ -69,10 +70,12 @@ abstract class Model implements RowGatewayInterface
      * @return null|\Zend\Db\ResultSet\ResultSetInterface
      */
     public function fetchAll($select = null) {
+        $this->loadAdapter();
         // we need this workaround to avoid data issues with RowData interface
         // it uses the current instance as a template, so it shares data from the current instance if its not set in the result rows
         $class = get_called_class();
-        $model = new $class($this->getAdapter());
+        $model = new $class();
+        $model->setServiceLocator($this->getServiceLocator());
         $table = $model->getTable();
         if($select instanceof Select) {
             $result = $table->selectWith($select);
@@ -108,6 +111,7 @@ abstract class Model implements RowGatewayInterface
      * @return null|ActiveRecordAbstract
      */
     public function find($id) {
+        $this->loadAdapter();
         $select = $this->select();
         $select->where(array('id' => $id));
         return $this->fetchRow($select);
@@ -120,6 +124,7 @@ abstract class Model implements RowGatewayInterface
      * @return int
      */
     public function count($select = null) {
+        $this->loadAdapter();
         if(null === $select) $select = $this->select();
         $adapter = $this->getAdapter();
         $sql = new Sql($adapter);
@@ -160,6 +165,7 @@ abstract class Model implements RowGatewayInterface
      * returns the table adapter instance
     */
     public function getTable() {
+        $this->loadAdapter();
         $table = new TableGateway($this->tableName, $this->adapter, new RowGatewayFeature($this));
         return $table;
     }
@@ -185,6 +191,11 @@ abstract class Model implements RowGatewayInterface
      */
     public function getAdapter() {
         return $this->adapter;
+    }
+
+    private function loadAdapter() {
+        if($this->adapter || ! $this->getServiceLocator()) return;
+        $this->adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
     }
 
     /**
@@ -214,7 +225,8 @@ abstract class Model implements RowGatewayInterface
      */
     public function reset() {
         foreach($this->getProperties() as $prop) {
-            $this->$prop = null;
+            $key = $prop->name;
+            $this->$key = null;
         }
     }
 

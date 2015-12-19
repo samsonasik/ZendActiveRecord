@@ -1,6 +1,7 @@
 {
   "name": "digitalus/zend-active-record",
   "description": "Active Record model for Zend 2 DB",
+  "license": "BSD-3-Clause",
   "homepage": "https://github.com/forrestLyman/ZendActiveRecord",
   "require": {
     "php": ">=5.5",
