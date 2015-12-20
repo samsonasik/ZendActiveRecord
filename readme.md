@@ -1,9 +1,13 @@
-<h1 class="legend">Active Record</h1>
+<h1 class="legend">Zend Active Record</h1>
+
 <p>The active record pattern is one where an object in the application maps to a single row in the database.
 This object exposes CRUD (create, read, update, and delete) methods for the related row.</p>
 
+<h2>Installation</h2>
+`composer require digitalus/zend-active-record`
+
 <h2>This Implementation</h2>
-<p>All of the AR (active record) models extend the <code>ZendActiveRecordAbstract</code> base class which handles
+<p>All of the AR (active record) models extend the <code>ZendActiveRecord\Model</code> base class which handles
 the underlying functionality. The implementation is simplistic and light weight by design, to avoid any
 interference between the AR implementation and individual model logic. The only dependency is a db adapter
 to handle db interaction.</p>
